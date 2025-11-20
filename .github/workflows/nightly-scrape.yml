@@ -1,0 +1,49 @@
+name: Nightly Scrape
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  scrape:
+    name: Multi-State Scrape
+    runs-on: ubuntu-latest
+    
+    # Safety gate: skip if SCRAPE_DISABLE is set
+    if: vars.SCRAPE_DISABLE != 'true'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run scraper for VA, TX, NC
+      run: |
+        scrapy crawl vrm -a states=VA,TX,NC
+    
+    - name: Upload Excel output
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: nightly-scrape-${{ github.run_number }}
+        path: output/*.xlsx
+        retention-days: 30
+    
+    - name: Report completion
+      if: success()
+      run: |
+        echo "Nightly scrape completed successfully"
+        echo "Scraped states: VA, TX, NC"
+        echo "Output files:"
+        ls -lh output/

@@ -68,6 +68,10 @@ instance/
 # Scrapy stuff:
 .scrapy
 
+# VRM Scraper output
+output/
+*.xlsx
+
 # Sphinx documentation
 docs/_build/
 
