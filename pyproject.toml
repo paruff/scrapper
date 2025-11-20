@@ -32,6 +32,10 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = "-v --tb=short"
+filterwarnings = [
+    # Suppress DeprecationWarning from Twisted's use of 'cgi' (Python 3.13 removal)
+    "ignore::DeprecationWarning:twisted.web.http",
+]
 
 [tool.mypy]
 python_version = "3.11"

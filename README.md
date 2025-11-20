@@ -2,6 +2,8 @@
 
 A responsible, rate-limited web scraper for VRM Properties vacation rental listings. Built with Scrapy, this tool extracts property data from VRM Properties state pages and exports to multi-sheet Excel workbooks for research and analysis.
 
+> For AI coding agents: see `.github/copilot-instructions.md` for repo-specific guidance on architecture, workflows, and conventions.
+
 ## Features
 
 - **State-based scraping** with configurable state selection (CLI or YAML config)

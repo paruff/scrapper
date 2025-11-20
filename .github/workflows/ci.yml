@@ -38,6 +38,10 @@ jobs:
       run: |
         ruff check .
     
+    - name: Verify Copilot instructions present
+      run: |
+        test -f .github/copilot-instructions.md || (echo "Missing .github/copilot-instructions.md" && exit 1)
+
     - name: Run Ruff format check
       run: |
         ruff format --check .
