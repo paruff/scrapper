@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Virginia Vacation Rentals - VRM Properties</title>
+</head>
+<body>
+    <div class="property-listings">
+        <div class="property-card">
+            <h3>Beach House Paradise</h3>
+            <p class="location">Virginia Beach, VA</p>
+        </div>
+        <div class="property-card">
+            <h3>Mountain Retreat</h3>
+            <p class="location">Charlottesville, VA</p>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+        window.__INITIAL_STATE__ = {
+            "properties": [
+                {
+                    "id": "prop-001",
+                    "name": "Beach House Paradise",
+                    "city": "Virginia Beach",
+                    "address": "123 Ocean Ave",
+                    "price": "$2500/week",
+                    "bedrooms": "4",
+                    "bathrooms": "3",
+                    "url": "https://www.vacationrentalmanagers.com/va/beach-house-paradise"
+                },
+                {
+                    "id": "prop-002",
+                    "name": "Mountain Retreat",
+                    "city": "Charlottesville",
+                    "address": "456 Mountain Rd",
+                    "price": "$1800/week",
+                    "bedrooms": "3",
+                    "bathrooms": "2",
+                    "url": "https://www.vacationrentalmanagers.com/va/mountain-retreat"
+                }
+            ],
+            "pagination": {
+                "current": 1,
+                "total": 5
+            }
+        };
+    </script>
+    
+    <div class="pagination">
+        <a href="/va?page=2" class="next-page">Next</a>
+    </div>
+</body>
+</html>

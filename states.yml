@@ -1,0 +1,10 @@
+# VRM Scraper - State Configuration
+# Fallback list of US state codes for scraping
+# Override via CLI: scrapy crawl vrm -a states=VA,TX,NC
+
+states:
+  - VA
+  - TX
+  - NC
+  - FL
+  - CA

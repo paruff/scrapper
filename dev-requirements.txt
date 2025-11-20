@@ -1,0 +1,12 @@
+# VRM Scraper - Development Dependencies
+# Testing, linting, type checking, and security tools
+
+pytest==7.4.3
+pytest-cov==4.1.0
+ruff==0.1.9
+mypy==1.7.1
+bandit==1.7.6
+types-PyYAML==6.0.12.12
+
+# Note: gitleaks is a Go binary, not a Python package
+# Install via GitHub Actions or from: https://github.com/gitleaks/gitleaks
