@@ -1,0 +1,23 @@
+features:
+  - id: VRM-F001
+    title: Scrape VRM listings responsibly
+    status: in-progress
+    stories:
+      - VRM-S001
+
+stories:
+  - id: VRM-S001
+    title: Parse listings and export Excel
+    feature: VRM-F001
+    status: in-progress
+    priority: medium
+    acceptance:
+      - Inline JSON model is parsed into properties
+      - Pagination respects per-state max page cap
+      - Excel sheets are created per state with header order from first item
+    bdd:
+      feature_file: tests/bdd/features/scrape.feature
+      scenarios:
+        - Extract inline JSON model into properties
+        - Respect per-state page cap and avoid extra follows
+        - Write Excel with per-state sheet and ordered headers
