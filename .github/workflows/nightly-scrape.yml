@@ -34,7 +34,7 @@ jobs:
     
     - name: Upload Excel output
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: nightly-scrape-${{ github.run_number }}
         path: output/*.xlsx
