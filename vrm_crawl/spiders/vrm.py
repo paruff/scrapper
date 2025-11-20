@@ -90,8 +90,8 @@ class VrmSpider(scrapy.Spider):
             self.states = self._load_states_from_yaml()
             self.logger.info(f"Using states from states.yml: {self.states}")
 
-        self.page_count = {}  # Track pages per state
-        self.max_pages = self.settings.getint("VRM_MAX_PAGES", 250)
+        self.page_count: dict[str, int] = {}  # Track pages per state
+        self.max_pages = 250  # Default, will be overridden from settings if available
 
     def _load_states_from_yaml(self) -> list:
         """Load state codes from states.yml fallback config.
@@ -114,6 +114,9 @@ class VrmSpider(scrapy.Spider):
         Yields:
             Scrapy Request objects for state listing pages
         """
+        # Get max_pages from settings (now settings are available via crawler)
+        self.max_pages = self.crawler.settings.getint("VRM_MAX_PAGES", 250)
+
         for state in self.states:
             self.page_count[state] = 0
             url = f"https://www.vacationrentalmanagers.com/{state.lower()}"
