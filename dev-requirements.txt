@@ -1,7 +1,7 @@
 # VRM Scraper - Development Dependencies
 # Testing, linting, type checking, and security tools
 
-pytest==7.4.3
+pytest==9.0.1
 pytest-cov==4.1.0
 pytest-bdd==6.1.1
 ruff==0.1.9
