@@ -269,6 +269,29 @@ Run Gitleaks secret scanning:
 gitleaks detect --source . --verbose
 ```
 
+## Jenkins Pipelines (IDP Golden Path)
+
+This repo includes Jenkins pipelines that mirror the GitHub Actions workflows:
+
+- `Jenkinsfile` (CI for PRs/branches):
+   - Setup Python venv, install deps
+   - Ruff lint and format check
+   - mypy (non-blocking), bandit (non-blocking)
+   - pytest with JUnit + coverage XML
+   - Archives `coverage.xml` and any `output/` files
+
+- `Jenkinsfile.nightly` (scheduled sample scrape):
+   - Cron trigger around 2 AM UTC (`H 2 * * *`)
+   - Respects `SCRAPE_DISABLE=true` to skip safely
+   - Env knobs: `SCRAPE_STATES` (default `VA,TX,NC`), `CLOSESPIDER_PAGECOUNT` (default `5`)
+   - Archives `output/` results
+
+Jenkins hints:
+
+- Agents must have `python3` available. Pipelines create `.venv` in workspace.
+- Install JUnit plugin to visualize test results.
+- Optionally install coverage publishers; pipeline archives `coverage.xml` regardless.
+
 ## Advanced Security
 
 ### GitHub Actions Workflows

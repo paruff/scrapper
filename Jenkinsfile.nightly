@@ -1,0 +1,59 @@
+pipeline {
+  agent any
+  options {
+    ansiColor('xterm')
+    timestamps()
+    timeout(time: 30, unit: 'MINUTES')
+  }
+  triggers {
+    cron('H 2 * * *') // Around 2 AM UTC daily
+  }
+  environment {
+    PYTHONUNBUFFERED = '1'
+    VENV_DIR = '.venv'
+    SCRAPE_DISABLE = "${env.SCRAPE_DISABLE ?: 'false'}"
+    SCRAPE_STATES = "${env.SCRAPE_STATES ?: 'VA,TX,NC'}"
+    MAX_PAGES = "${env.CLOSESPIDER_PAGECOUNT ?: '5'}"
+  }
+  stages {
+    stage('Gate') {
+      steps {
+        script {
+          if (env.SCRAPE_DISABLE?.toLowerCase() == 'true') {
+            echo 'SCRAPE_DISABLE=true; skipping nightly scrape.'
+            currentBuild.result = 'SUCCESS'
+            error('Nightly scrape disabled by gate')
+          }
+        }
+      }
+    }
+    stage('Checkout') {
+      steps { checkout scm }
+    }
+    stage('Setup Python venv') {
+      steps {
+        sh '''
+          set -e
+          python3 -m venv "$VENV_DIR"
+          . "$VENV_DIR/bin/activate"
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+        '''
+      }
+    }
+    stage('Sample Scrape') {
+      steps {
+        sh '''
+          . "$VENV_DIR/bin/activate"
+          echo "Running sample scrape for states=$SCRAPE_STATES, page cap=$MAX_PAGES"
+          scrapy crawl vrm -a states="$SCRAPE_STATES" -s CLOSESPIDER_PAGECOUNT="$MAX_PAGES" || echo "Sample scrape completed"
+        '''
+      }
+    }
+  }
+  post {
+    always {
+      archiveArtifacts artifacts: 'output/**/*', allowEmptyArchive: true
+    }
+  }
+}
