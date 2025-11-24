@@ -2,5 +2,5 @@
 # Pinned versions for reproducibility
 
 scrapy==2.11.0
-openpyxl==3.1.2
+openpyxl==3.1.5
 PyYAML==6.0.3
