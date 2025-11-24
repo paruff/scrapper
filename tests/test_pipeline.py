@@ -62,11 +62,11 @@ def test_excel_pipeline_creates_workbook_and_sheets(tmp_path, monkeypatch):
     assert out.exists()
 
     wb = load_workbook(str(out))
-    assert set(["VA", "TX"]).issubset(set(wb.sheetnames))
+    assert {"VA", "TX"}.issubset(set(wb.sheetnames))
 
     # Header row equals item keys order
     va = wb["VA"]
-    headers = [c.value for c in next(va.iter_rows(min_row=1, max_row=1))[0:len(item_va)]]
+    headers = [c.value for c in next(va.iter_rows(min_row=1, max_row=1))[0 : len(item_va)]]
     assert headers == list(item_va.keys())
 
     # Data rows appended
