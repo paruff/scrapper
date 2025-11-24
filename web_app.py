@@ -80,9 +80,13 @@ def scrape():
     page_limit = request.form.get("page_limit", "").strip()
     if page_limit:
         # Security: ensure page_limit is purely numeric before using it
-        if page_limit.isdigit() and 1 <= int(page_limit) <= 1000:
-            cmd.extend(["-s", f"CLOSESPIDER_PAGECOUNT={page_limit}"])
-        else:
+        try:
+            page_limit_int = int(page_limit)
+            if 1 <= page_limit_int <= 1000:
+                cmd.extend(["-s", f"CLOSESPIDER_PAGECOUNT={page_limit}"])
+            else:
+                flash("Invalid page limit. Must be a number between 1 and 1000.", "warning")
+        except ValueError:
             flash("Invalid page limit. Must be a number between 1 and 1000.", "warning")
 
     try:
