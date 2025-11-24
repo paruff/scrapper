@@ -23,6 +23,13 @@ from flask import (
 )
 
 app = Flask(__name__)
+
+# Security: Require secret key in production; fail fast if not set in non-dev mode
+if os.environ.get("FLASK_ENV") == "production" and not os.environ.get("FLASK_SECRET_KEY"):
+    raise RuntimeError(
+        "FLASK_SECRET_KEY environment variable must be set in production. "
+        "Generate one with: python -c 'import secrets; print(secrets.token_hex())'"
+    )
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev-secret-key-change-in-production")
 
 # Available states (could be loaded from states.yml)
@@ -69,12 +76,15 @@ def scrape():
 
     try:
         # Run scraper in background
-        # For production, consider using Celery or similar task queue
+        # Security: Using list format for cmd prevents shell injection
+        # For production, consider using Celery or similar task queue for async processing
         result = subprocess.run(
             cmd,
             capture_output=True,
             text=True,
             timeout=600,  # 10 minute timeout
+            shell=False,  # Explicit: never use shell to prevent injection
+            check=False,  # Don't raise on non-zero exit
         )
 
         if result.returncode == 0:
@@ -135,5 +145,17 @@ def api_status():
 
 
 if __name__ == "__main__":
-    # Development server - not for production
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    # Development server - not for production use
+    # For production, use a WSGI server like Gunicorn:
+    #   gunicorn -w 4 -b 0.0.0.0:8000 web_app:app
+    debug_mode = os.environ.get("FLASK_DEBUG", "1") == "1"
+    host = os.environ.get("FLASK_HOST", "127.0.0.1")  # Localhost by default for security
+    port = int(os.environ.get("FLASK_PORT", "5000"))
+
+    if debug_mode and host == "0.0.0.0":
+        print(
+            "WARNING: Running in debug mode with host 0.0.0.0 is insecure. "
+            "Only use this in trusted development environments."
+        )
+
+    app.run(debug=debug_mode, host=host, port=port)
