@@ -97,6 +97,19 @@ README.md               # This file
    pip install -r dev-requirements.txt
    ```
 
+5. **(Optional) Configure states:**
+   Edit `states.yml` to customize which states to scrape:
+   ```yaml
+   states:
+     - VA
+     - TX
+     - NC
+     - FL
+     - CA
+   ```
+   
+   **Note:** The `states` CLI argument is optional. The scraper uses `states.yml` by default.
+
 ## Running the Scraper
 
 ### Web Application (Recommended)
@@ -139,19 +152,33 @@ gunicorn -w 4 -b 0.0.0.0:8000 web_app:app
 
 ### Command Line Interface
 
-#### Basic Usage
+#### Basic Usage (Using Config File)
 
-Scrape using states from `states.yml` (default: VA, TX, NC, FL, CA):
+**Recommended:** Edit `states.yml` to configure which states to scrape, then run:
 ```bash
 scrapy crawl vrm
 ```
 
-### Custom State Selection
+The `states.yml` configuration file:
+```yaml
+states:
+  - VA
+  - TX
+  - NC
+  - FL
+  - CA
+```
 
-Override states via command-line argument (takes precedence over `states.yml`):
+**No command-line arguments required!** The scraper automatically reads states from the config file.
+
+#### Custom State Selection (CLI Override)
+
+For one-time scrapes or testing, override the config file via command-line argument:
 ```bash
 scrapy crawl vrm -a states=VA,TX,NC
 ```
+
+**Note:** CLI arguments take precedence over `states.yml` when provided.
 
 ### Output
 
@@ -161,7 +188,12 @@ scrapy crawl vrm -a states=VA,TX,NC
 
 ### Sample Scrape (Testing)
 
-Run a quick test scrape to verify setup:
+Run a quick test scrape to verify setup (uses states from `states.yml`):
+```bash
+scrapy crawl vrm -s CLOSESPIDER_PAGECOUNT=5
+```
+
+Or test with specific states:
 ```bash
 scrapy crawl vrm -a states=VA -s CLOSESPIDER_PAGECOUNT=5
 ```

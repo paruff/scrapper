@@ -82,8 +82,9 @@ jobs:
     - name: Run sample scrape (5 pages max)
       run: |
         # Test spider initialization and parsing logic
+        # Uses states from states.yml config file (no CLI args required)
         # Limited to 5 pages to avoid long CI runs
-        scrapy crawl vrm -a states=VA -s CLOSESPIDER_PAGECOUNT=5 || echo "Sample scrape completed"
+        scrapy crawl vrm -s CLOSESPIDER_PAGECOUNT=5 || echo "Sample scrape completed"
     
     - name: Upload sample output
       if: always()
