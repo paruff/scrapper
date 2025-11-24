@@ -6,6 +6,7 @@ A responsible, rate-limited web scraper for VRM Properties vacation rental listi
 
 ## Features
 
+- **🌐 Web interface** - User-friendly web app for easy interaction and file downloads
 - **State-based scraping** with configurable state selection (CLI or YAML config)
 - **Multi-sheet Excel output** - one worksheet per state with automatic workbook management
 - **Inline JSON parsing** - extracts property data from page initialization scripts
@@ -96,21 +97,88 @@ README.md               # This file
    pip install -r dev-requirements.txt
    ```
 
+5. **(Optional) Configure states:**
+   Edit `states.yml` to customize which states to scrape:
+   ```yaml
+   states:
+     - VA
+     - TX
+     - NC
+     - FL
+     - CA
+   ```
+   
+   **Note:** The `states` CLI argument is optional. The scraper uses `states.yml` by default.
+
 ## Running the Scraper
 
-### Basic Usage
+### Web Application (Recommended)
 
-Scrape using states from `states.yml` (default: VA, TX, NC, FL, CA):
+The easiest way to use the scraper is through the web interface:
+
+1. **Start the web server:**
+   ```bash
+   python web_app.py
+   ```
+
+2. **Open your browser:**
+   Navigate to `http://localhost:5000`
+
+3. **Use the interface:**
+   - Select one or more states from the grid
+   - Optionally set a page limit for testing (e.g., 5 pages)
+   - Click "Start Scraping" to begin
+   - Download generated Excel files from the "Available Downloads" section
+
+**Features:**
+- 🎨 Modern, user-friendly interface
+- ✅ Visual state selection with checkboxes
+- 📊 Real-time file listing and download
+- 🔒 Secure file handling with validation
+- 📱 Responsive design for mobile and desktop
+
+**Production Deployment:**
+For production use, deploy with a WSGI server like Gunicorn:
+```bash
+pip install gunicorn
+gunicorn -w 4 -b 0.0.0.0:8000 web_app:app
+```
+
+Set the `FLASK_SECRET_KEY` environment variable:
+```bash
+export FLASK_SECRET_KEY="your-secure-random-key"
+gunicorn -w 4 -b 0.0.0.0:8000 web_app:app
+```
+
+### Command Line Interface
+
+#### Basic Usage (Using Config File)
+
+**Recommended:** Edit `states.yml` to configure which states to scrape, then run:
 ```bash
 scrapy crawl vrm
 ```
 
-### Custom State Selection
+The `states.yml` configuration file:
+```yaml
+states:
+  - VA
+  - TX
+  - NC
+  - FL
+  - CA
+```
 
-Override states via command-line argument (takes precedence over `states.yml`):
+**No command-line arguments required!** The scraper automatically reads states from the config file.
+
+#### Custom State Selection (CLI Override)
+
+For one-time scrapes or testing, override the config file via command-line argument:
 ```bash
 scrapy crawl vrm -a states=VA,TX,NC
 ```
+
+**Note:** CLI arguments take precedence over `states.yml` when provided.
 
 ### Output
 
@@ -120,7 +188,12 @@ scrapy crawl vrm -a states=VA,TX,NC
 
 ### Sample Scrape (Testing)
 
-Run a quick test scrape to verify setup:
+Run a quick test scrape to verify setup (uses states from `states.yml`):
+```bash
+scrapy crawl vrm -s CLOSESPIDER_PAGECOUNT=5
+```
+
+Or test with specific states:
 ```bash
 scrapy crawl vrm -a states=VA -s CLOSESPIDER_PAGECOUNT=5
 ```
