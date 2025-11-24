@@ -70,7 +70,10 @@ def assert_first_property_fields(context: dict, name: str, city: str):
     assert first["city"] == city
 
 
-@given(parsers.parse('a spider configured with max pages {max_pages:d} for state "{state}"'), target_fixture="configured_spider")
+@given(
+    parsers.parse('a spider configured with max pages {max_pages:d} for state "{state}"'),
+    target_fixture="configured_spider",
+)
 def configured_spider(max_pages: int, state: str) -> VrmSpider:
     spider = VrmSpider(states=state)
     spider.crawler = SimpleNamespace(settings=DummySettings({"VRM_MAX_PAGES": max_pages}))
@@ -125,7 +128,9 @@ def process_item_in_order(open_pipeline: MultiSheetExcelPipeline, state: str, co
     open_pipeline.process_item(item, None)
     dummy_spider = type("S", (), {"logger": type("L", (), {"info": lambda *a, **k: None})()})()
     open_pipeline.close_spider(dummy_spider)
-    context["output_file"] = Path("output") / f"vrm_listings_{datetime.now().strftime('%Y-%m-%d')}.xlsx"
+    context["output_file"] = (
+        Path("output") / f"vrm_listings_{datetime.now().strftime('%Y-%m-%d')}.xlsx"
+    )
 
 
 @then(parsers.parse('the workbook has a sheet "{state}" with headers matching the item key order'))

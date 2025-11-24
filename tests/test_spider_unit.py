@@ -7,7 +7,6 @@ pagination follow behavior, and page cap handling.
 from types import SimpleNamespace
 from typing import Any
 
-import pytest
 from scrapy.http import Request, TextResponse
 
 from vrm_crawl.spiders.vrm import VrmSpider, extract_inline_model
@@ -76,9 +75,7 @@ def test_parse_yields_items_and_next_request():
         "};</script></head>"
         '<body><a class="next-page" href="/va?page=2">Next</a></body></html>'
     )
-    resp = _build_response(
-        "https://www.vacationrentalmanagers.com/va", html, meta={"state": "VA"}
-    )
+    resp = _build_response("https://www.vacationrentalmanagers.com/va", html, meta={"state": "VA"})
 
     out = list(spider.parse(resp))
     # One item and one follow request
@@ -109,9 +106,7 @@ def test_parse_respects_max_pages_no_follow():
         "};</script></head>"
         '<body><a class="next-page" href="/va?page=2">Next</a></body></html>'
     )
-    resp = _build_response(
-        "https://www.vacationrentalmanagers.com/va", html, meta={"state": "VA"}
-    )
+    resp = _build_response("https://www.vacationrentalmanagers.com/va", html, meta={"state": "VA"})
 
     out = list(spider.parse(resp))
     follows = [o for o in out if isinstance(o, Request)]
@@ -121,7 +116,7 @@ def test_parse_respects_max_pages_no_follow():
 def test_extract_inline_model_whitespace_and_multiple_scripts():
     html = (
         "<script>console.log('pre');</script>\n"
-        "<script>window.__INITIAL_STATE__    =   {\n  \"properties\": []\n};</script>\n"
+        '<script>window.__INITIAL_STATE__    =   {\n  "properties": []\n};</script>\n'
         "<script>console.log('post');</script>"
     )
     model = extract_inline_model(html)
