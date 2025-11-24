@@ -13,6 +13,7 @@ A responsible, rate-limited web scraper for VRM Properties vacation rental listi
 - **Safety caps** - maximum 250 pages per state to prevent runaway scrapes
 - **Robust error handling** - graceful fallbacks for missing data
 - **Property slug generation** - URL-friendly identifiers for properties
+- **Economic growth areas** - identify economically growing areas for real estate investment
 
 ## Tech Stack
 
@@ -35,6 +36,7 @@ vrm_crawl/              # Scrapy project root
 ├── middlewares.py      # Custom middleware (placeholder)
 ├── pipelines.py        # MultiSheetExcelPipeline implementation
 ├── settings.py         # Scrapy settings (throttling, user-agent, caps)
+├── growth_areas.py     # Economic growth areas data module
 └── spiders/
     ├── __init__.py
     └── vrm.py          # VrmSpider with state filtering & JSON parsing
@@ -43,7 +45,15 @@ tests/                  # Test suite
 ├── __init__.py
 ├── data/
 │   └── va_page_sample.html  # HTML fixture for offline testing
-└── test_vrm_parse.py   # Unit tests for regex extraction & slug logic
+├── test_vrm_parse.py   # Unit tests for regex extraction & slug logic
+├── test_growth_areas.py # Unit tests for growth areas module
+└── bdd/
+    ├── features/
+    │   ├── scrape.feature       # BDD scenarios for scraping
+    │   └── growth_areas.feature # BDD scenarios for growth areas
+    └── steps/
+        ├── test_scrape_steps.py        # Step definitions for scraping
+        └── test_growth_areas_steps.py  # Step definitions for growth areas
 
 output/                 # Generated Excel files (gitignored)
 
@@ -124,6 +134,58 @@ Run a quick test scrape to verify setup:
 ```bash
 scrapy crawl vrm -a states=VA -s CLOSESPIDER_PAGECOUNT=5
 ```
+
+## Economic Growth Areas
+
+The tool includes a feature to identify economically growing areas for real estate investment. This helps investors find properties in areas with strong economic indicators.
+
+### Getting Growth Areas
+
+Get economically growing areas for a specific state:
+```bash
+python get_growth_areas.py VA
+```
+
+List all supported states:
+```bash
+python get_growth_areas.py --list
+```
+
+### Using the API Directly
+
+You can also use the growth areas module programmatically:
+
+```python
+from vrm_crawl.growth_areas import get_growth_areas, format_growth_areas
+
+# Get growth areas for Texas
+areas = get_growth_areas('TX')
+for area in areas:
+    print(f"{area['area']}: {', '.join(area['cities'])}")
+
+# Get formatted output
+output = format_growth_areas('VA')
+print(output)
+```
+
+### Growth Indicators
+
+Each growth area includes:
+- **Employment Growth** - Job market expansion trends
+- **GDP Growth** - Economic output growth
+- **Population Trend** - Population growth patterns
+- **Key Sectors** - Major industries driving growth
+
+### Supported States
+
+Economic growth data is available for:
+- **VA** - Virginia
+- **TX** - Texas
+- **NC** - North Carolina
+- **FL** - Florida
+- **CA** - California
+
+Data is based on recent economic indicators including employment growth, GDP growth, and population trends from authoritative sources.
 
 ## Excel Schema
 

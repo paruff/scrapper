@@ -4,6 +4,11 @@ features:
     status: in-progress
     stories:
       - VRM-S001
+  - id: VRM-F002
+    title: Economic growth areas for real estate investment
+    status: done
+    stories:
+      - VRM-S002
 
 stories:
   - id: VRM-S001
@@ -21,3 +26,21 @@ stories:
         - Extract inline JSON model into properties
         - Respect per-state page cap and avoid extra follows
         - Write Excel with per-state sheet and ordered headers
+  - id: VRM-S002
+    title: Economic growth areas for real estate investment
+    feature: VRM-F002
+    status: done
+    priority: medium
+    acceptance:
+      - System provides economically growing areas given a state
+      - Each area includes cities, growth indicators, and key sectors
+      - CLI tool available for querying growth areas
+      - Python API available for programmatic access
+      - Supports VA, TX, NC, FL, CA states
+    bdd:
+      feature_file: tests/bdd/features/growth_areas.feature
+      scenarios:
+        - Request growth areas for Virginia
+        - Request growth areas for Texas
+        - Request growth areas for unsupported state
+        - Get all supported states
