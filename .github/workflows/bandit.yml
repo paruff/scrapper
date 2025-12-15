@@ -38,7 +38,7 @@ jobs:
         sarif_file: bandit-results.sarif
     
     - name: Upload Bandit artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: bandit-results
         path: bandit-results.sarif
